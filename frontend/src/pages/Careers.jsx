@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Users, Target, Eye, Award, BookOpen, Briefcase, CheckCircle, TrendingUp, Globe, Zap, Heart, Shield, Code, Cpu, Terminal, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import careerCtaBg from '../assets/career-cta-bg.png';
 
@@ -149,20 +150,22 @@ function Careers() {
                         }}>
                             Internship
                         </button>
-                        <button className="button-primary moving-btn" style={{
-                            padding: '1.25rem 3rem',
-                            fontSize: '1.1rem',
-                            fontWeight: '700',
-                            borderRadius: '12px',
-                            minWidth: '200px',
-                            background: 'var(--accent-base)',
-                            color: 'white',
-                            border: 'none',
-                            cursor: 'pointer',
-                            animationDelay: '1.5s'
-                        }}>
-                            Full time
-                        </button>
+                        <Link to="/career/full-time">
+                            <button className="button-primary moving-btn" style={{
+                                padding: '1.25rem 3rem',
+                                fontSize: '1.1rem',
+                                fontWeight: '700',
+                                borderRadius: '12px',
+                                minWidth: '200px',
+                                background: 'var(--accent-base)',
+                                color: 'white',
+                                border: 'none',
+                                cursor: 'pointer',
+                                animationDelay: '1.5s'
+                            }}>
+                                Full time
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </section>

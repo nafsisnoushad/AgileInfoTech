@@ -23,15 +23,15 @@ function Footer() {
                 }}>
 
                     {/* Column 1: Brand & About */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '1.5rem', maxWidth: '320px' }}>
-                        <div style={{ marginTop: '-1rem' }}> {/* Offset to align with other headers */}
-                            <img src={logo} alt="AgileInfoTech Logo" style={{ height: '110px', width: 'auto', objectFit: 'contain' }} />
-                            <p style={{ fontSize: '0.95rem', lineHeight: '1.8', color: '#94a3b8', marginTop: '0.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '1.5rem', maxWidth: '320px', margin: '0 auto' }}>
+                        <div style={{ width: '100%' }}>
+                            <img src={logo} alt="AgileInfoTech Logo" style={{ height: '100px', width: 'auto', objectFit: 'contain' }} />
+                            <p style={{ fontSize: '0.9rem', lineHeight: '1.7', color: '#94a3b8', marginTop: '0.5rem', maxWidth: '280px', margin: '0.5rem auto 0' }}>
                                 Leading the way in digital innovation and professional tech training. We empower businesses and individuals to thrive in the modern technological landscape.
                             </p>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                             {[
                                 { icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', url: 'https://www.facebook.com/Agileinfoz', name: 'Facebook' },
                                 { icon: 'M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z', url: 'https://x.com/agileinfo_tech', name: 'Twitter' },
@@ -40,8 +40,8 @@ function Footer() {
                                 { icon: 'M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.42 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.42-5.58z M9.75 15.02V8.98L15.45 12l-5.7 3.02z', url: 'https://www.youtube.com/@AgileinfoTechyternLLP', name: 'YouTube' }
                             ].map((social, i) => (
                                 <a key={i} href={social.url} target="_blank" rel="noopener noreferrer" style={{
-                                    width: '38px',
-                                    height: '38px',
+                                    width: '34px',
+                                    height: '34px',
                                     borderRadius: '50%',
                                     background: 'rgba(255, 255, 255, 0.05)',
                                     display: 'flex',
@@ -62,8 +62,8 @@ function Footer() {
                                     e.currentTarget.style.boxShadow = 'none';
                                 }}>
                                     <svg
-                                        width="18"
-                                        height="18"
+                                        width="16"
+                                        height="16"
                                         viewBox={social.viewBox || "0 0 24 24"}
                                         fill="none"
                                         stroke="currentColor"
@@ -87,19 +87,19 @@ function Footer() {
                         </div>
                     </div>
 
-                    {/* Column 2: Programs & Services */}
+                    {/* Column 2: Services */}
                     <div>
-                        <h3 style={{ fontWeight: '700', marginBottom: '2rem', fontSize: '1.2rem', color: 'white',textAlign:'center' }}>
+                        <h3 style={{ fontWeight: '700', marginBottom: '1.5rem', fontSize: '1.2rem', color: 'white', textAlign: 'center' }}>
                             Services
                         </h3>
-                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem',textAlign:'center' }}>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'center', listStyle: 'none', padding: 0, margin: 0 }}>
                             {['Web Development',
                                 'Mobile App Development',
-                                'SEO Optimiztation',
-                                'Domain and Hosting Services',
-                                'General IT Consultations'].map((item, i) => (
+                                'SEO Optimization',
+                                'Domain & Hosting',
+                                'IT Consultations'].map((item, i) => (
                                 <li key={i}>
-                                    <a href="#" style={{ color: '#94a3b8', fontSize: '1rem', transition: 'padding-left 0.3s' }} onMouseEnter={(e) => { e.target.style.color = 'white'; e.target.style.paddingLeft = '8px'; }} onMouseLeave={(e) => { e.target.style.color = '#94a3b8'; e.target.style.paddingLeft = '0'; }}>
+                                    <a href="#" style={{ color: '#94a3b8', fontSize: '1rem', transition: 'color 0.3s' }} onMouseEnter={(e) => { e.target.style.color = 'white'; }} onMouseLeave={(e) => { e.target.style.color = '#94a3b8'; }}>
                                         {item}
                                     </a>
                                 </li>
@@ -109,13 +109,13 @@ function Footer() {
 
                     {/* Column 3: Quick Navigation */}
                     <div>
-                        <h3 style={{ fontWeight: '700', marginBottom: '2rem', fontSize: '1.2rem', color: 'white', textAlign: 'center' }}>
+                        <h3 style={{ fontWeight: '700', marginBottom: '1.5rem', fontSize: '1.2rem', color: 'white', textAlign: 'center' }}>
                             Quick Links
                         </h3>
-                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'center' }}>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'center', listStyle: 'none', padding: 0, margin: 0 }}>
                             {['Home', 'About', 'Services', 'Portfolio', 'Careers', 'Contact'].map((item, i) => (
                                 <li key={i}>
-                                    <a href="#" style={{ color: '#94a3b8', fontSize: '1rem', transition: 'padding-left 0.3s' }} onMouseEnter={(e) => { e.target.style.color = 'white'; e.target.style.paddingLeft = '8px'; }} onMouseLeave={(e) => { e.target.style.color = '#94a3b8'; e.target.style.paddingLeft = '0'; }}>
+                                    <a href="#" style={{ color: '#94a3b8', fontSize: '1rem', transition: 'color 0.3s' }} onMouseEnter={(e) => { e.target.style.color = 'white'; }} onMouseLeave={(e) => { e.target.style.color = '#94a3b8'; }}>
                                         {item}
                                     </a>
                                 </li>
@@ -123,34 +123,24 @@ function Footer() {
                         </ul>
                     </div>
 
-                    {/* Column 4: Contact & Newsletter */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                        <div>
-                            <h3 style={{ fontWeight: '700', marginBottom: '1.5rem', fontSize: '1.2rem', color: 'white', textAlign: 'center' }}>
-                                Contact Us
-                            </h3>
-                            <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                                <li style={{ display: 'flex', gap: '1rem', alignItems: 'center', color: '#94a3b8' }}>
-                                    <MapPin size={18} color="var(--accent-base)" />
-                                    <span style={{ fontSize: '0.95rem', textAlign: 'center' }}>AGILEINFOTECH, Thycaud,<br />
-                                        Thiruvananthapuram, 605014</span>
+                    {/* Column 4: Contact */}
+                    <div>
+                        <h3 style={{ fontWeight: '700', marginBottom: '1.5rem', fontSize: '1.2rem', color: 'white', textAlign: 'center' }}>
+                            Contact Us
+                        </h3>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', listStyle: 'none', padding: 0, margin: 0 }}>
+                            {[
+                                { icon: MapPin, text: <>AGILEINFOTECH, Thycaud,<br />Thiruvananthapuram, 605014</> },
+                                { icon: Mail, text: 'info@agileinfoz.com' },
+                                { icon: Phone, text: '+91 7907248735' },
+                                { icon: Bot, text: '+91 9847301349 (Support)' }
+                            ].map((item, i) => (
+                                <li key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', textAlign: 'center' }}>
+                                    <item.icon size={18} color="var(--accent-base)" style={{ flexShrink: 0 }} />
+                                    <span style={{ fontSize: '0.95rem', lineHeight: '1.4' }}>{item.text}</span>
                                 </li>
-                                <li style={{ display: 'flex', gap: '1rem', alignItems: 'center', color: '#94a3b8' }}>
-                                    <Mail size={18} color="var(--accent-base)" />
-                                    <span style={{ fontSize: '0.95rem', textAlign: 'center' }}>info@agileinfoz.com</span>
-                                </li>
-                                <li style={{ display: 'flex', gap: '1rem', alignItems: 'center', color: '#94a3b8' }}>
-                                    <Phone size={18} color="var(--accent-base)" />
-                                    <span style={{ fontSize: '0.95rem', textAlign: 'center' }}>+91 7907248735</span>
-
-                                </li>
-                                <li style={{ display: 'flex', gap: '1rem', alignItems: 'center', color: '#94a3b8' }}>
-                                    <Bot size={18} color="var(--accent-base)" />
-                                    <span style={{ fontSize: '0.95rem', textAlign: 'center' }}>+91 9847301349 (Support)</span>
-
-                                </li>
-                            </ul>
-                        </div>
+                            ))}
+                        </ul>
                     </div>
 
                 </div>

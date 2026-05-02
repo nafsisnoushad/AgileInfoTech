@@ -19,6 +19,37 @@ function useScrollReveal() {
 
 function Contact() {
     const [heroRef, heroVisible] = useScrollReveal();
+    const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '', interest: 'All Services', message: '' });
+    const [status, setStatus] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus('Sending...');
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/enquiry/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    company: formData.company,
+                    interested_in: formData.interest || 'All Services',
+                    message: formData.message
+                }),
+            });
+            if (response.ok) {
+                setStatus('Message sent successfully!');
+                setFormData({ name: '', email: '', phone: '', company: '', interest: 'All Services', message: '' });
+                setTimeout(() => setStatus(''), 3000);
+            } else {
+                setStatus('Failed to send message.');
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            setStatus('Error sending message.');
+        }
+    };
 
     return (
         <main style={{ paddingTop: '70px' }}>
@@ -177,42 +208,43 @@ function Contact() {
                             backdropFilter: 'blur(10px)',
                             border: '1px solid rgba(255, 255, 255, 0.1)'
                         }}>
-                            <form style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                         <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Name</label>
-                                        <input type="text" style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} required />
+                                        <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} required />
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                         <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Email Address</label>
-                                        <input type="email" style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} required />
+                                        <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} required />
                                     </div>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                         <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Phone Number</label>
-                                        <input type="tel" style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} required />
+                                        <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} required />
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Interested In</label>
-                                        <select style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a', appearance: 'none' }} required>
-                                            <option>All Services</option>
-                                            <option>Website Audit</option>
-                                            <option>New Website Development</option>
-                                            <option>Website Redesign</option>
-                                            <option>SEO Optimization</option>
-                                            <option>E-commerce Website</option>
-
-                                        </select>
+                                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Company Name</label>
+                                        <input type="text" value={formData.company} onChange={(e) => setFormData({...formData, company: e.target.value})} style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a' }} />
                                     </div>
                                 </div>
 
-
-
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Interested In</label>
+                                    <select value={formData.interest} onChange={(e) => setFormData({...formData, interest: e.target.value})} style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a', appearance: 'none' }} required>
+                                        <option>All Services</option>
+                                        <option>Website Audit</option>
+                                        <option>New Website Development</option>
+                                        <option>Website Redesign</option>
+                                        <option>SEO Optimization</option>
+                                        <option>E-commerce Website</option>
+                                    </select>
+                                </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                     <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#cbd5e1' }}>Message</label>
-                                    <textarea rows="4" style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a', resize: 'none' }}></textarea>
+                                    <textarea rows="4" required value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} style={{ padding: '0.875rem', borderRadius: '12px', border: 'none', background: 'white', color: '#0f172a', resize: 'none' }}></textarea>
                                 </div>
 
                                 <button type="submit" style={{
@@ -230,6 +262,7 @@ function Contact() {
                                 }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                                     <Send size={28} />
                                 </button>
+                                {status && <p style={{ color: status.includes('success') ? '#4ade80' : '#f87171', marginTop: '1rem', fontWeight: '600' }}>{status}</p>}
                             </form>
                         </div>
                     </div>

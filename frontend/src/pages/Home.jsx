@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { BookOpen, Star, Briefcase, Award, Gift, Monitor, BarChart, Database, ChevronLeft, ChevronRight, Globe, Zap, Search, Settings, Code, Layers, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
@@ -12,6 +12,42 @@ import logoKsum from '../assets/ksum.png';
 
 function Home() {
     const sliderRef = useRef(null);
+    const [showConsultModal, setShowConsultModal] = useState(false);
+    const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '', interest: '', message: '' });
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleConsultSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/enquiry/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    company: formData.company,
+                    interested_in: formData.interest || 'All Services',
+                    message: formData.message
+                }),
+            });
+            
+            if (response.ok) {
+                setSubmitted(true);
+                setTimeout(() => {
+                    setShowConsultModal(false);
+                    setSubmitted(false);
+                    setFormData({ name: '', email: '', phone: '', company: '', interest: '', message: '' });
+                }, 2500);
+            } else {
+                console.error("Failed to submit form");
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
+    };
 
     const scrollLeft = () => {
         if (sliderRef.current) sliderRef.current.scrollBy({ left: -320, behavior: 'smooth' });
@@ -105,7 +141,11 @@ function Home() {
                             We design modern, fast, and SEO-friendly websites that attract the right customers, build trust, and increase your revenue — 24×7.
                         </p>
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                            <button className="btn btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '1.125rem' }}>
+                            <button
+                                className="btn btn-primary"
+                                style={{ padding: '0.875rem 2rem', fontSize: '1.125rem' }}
+                                onClick={() => setShowConsultModal(true)}
+                            >
                                 GET FREE CONSULTATION
                             </button>
                             <Link to="/services">
@@ -415,6 +455,159 @@ function Home() {
             </section>
 
             <Footer />
+
+            {/* ── FREE CONSULTATION POPUP MODAL ── */}
+            {showConsultModal && (
+                <div
+                    onClick={(e) => { if (e.target === e.currentTarget) setShowConsultModal(false); }}
+                    style={{
+                        position: 'fixed', inset: 0, zIndex: 9999,
+                        background: 'rgba(2, 6, 23, 0.85)',
+                        backdropFilter: 'blur(8px)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        padding: '1rem',
+                        animation: 'fadeInBackdrop 0.3s ease'
+                    }}
+                >
+                    <div style={{
+                        background: 'linear-gradient(145deg, #0f172a, #1e293b)',
+                        borderRadius: '28px',
+                        padding: '3rem',
+                        width: '100%',
+                        maxWidth: '580px',
+                        border: '1px solid rgba(56, 189, 248, 0.25)',
+                        boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(56,189,248,0.1)',
+                        position: 'relative',
+                        animation: 'slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+                    }}>
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setShowConsultModal(false)}
+                            style={{
+                                position: 'absolute', top: '1.25rem', right: '1.25rem',
+                                background: 'rgba(255,255,255,0.08)', border: 'none',
+                                color: '#94a3b8', width: '36px', height: '36px',
+                                borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                transition: 'background 0.2s, color 0.2s'
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.2)'; e.currentTarget.style.color = '#ef4444'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#94a3b8'; }}
+                        >
+                            ✕
+                        </button>
+
+                        {submitted ? (
+                            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                                <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>🎉</div>
+                                <h3 style={{ color: '#38bdf8', fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.75rem' }}>Thank You!</h3>
+                                <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.6 }}>We've received your request. Our team will contact you within 24 hours.</p>
+                            </div>
+                        ) : (
+                            <>
+                                {/* Header */}
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <div style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                                        background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)',
+                                        borderRadius: '999px', padding: '4px 14px',
+                                        fontSize: '0.78rem', fontWeight: 700, color: '#38bdf8',
+                                        textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem'
+                                    }}>✦ Free · No Obligation</div>
+                                    <h2 style={{ color: 'white', fontSize: '1.85rem', fontWeight: 800, lineHeight: 1.2, margin: 0 }}>
+                                        Get Your <span style={{ background: 'linear-gradient(90deg, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Free Consultation</span>
+                                    </h2>
+                                    <p style={{ color: '#64748b', fontSize: '0.92rem', marginTop: '0.6rem', lineHeight: 1.6 }}>Tell us about your project and we'll get back to you within 24 hours.</p>
+                                </div>
+
+                                {/* Form */}
+                                <form onSubmit={handleConsultSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                        {[{ label: 'Your Name', key: 'name', type: 'text', required: true }, { label: 'Email Address', key: 'email', type: 'email', required: true }].map(f => (
+                                            <div key={f.key}>
+                                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{f.label}</label>
+                                                <input
+                                                    type={f.type} required={f.required}
+                                                    value={formData[f.key]}
+                                                    onChange={e => setFormData({ ...formData, [f.key]: e.target.value })}
+                                                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.06)', color: 'white', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                                                    onFocus={e => e.currentTarget.style.borderColor = '#38bdf8'}
+                                                    onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                        {[{ label: 'Phone Number', key: 'phone', type: 'tel', required: true }, { label: 'Company Name', key: 'company', type: 'text' }].map(f => (
+                                            <div key={f.key}>
+                                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{f.label}</label>
+                                                <input
+                                                    type={f.type} required={f.required}
+                                                    value={formData[f.key]}
+                                                    onChange={e => setFormData({ ...formData, [f.key]: e.target.value })}
+                                                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.06)', color: 'white', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                                                    onFocus={e => e.currentTarget.style.borderColor = '#38bdf8'}
+                                                    onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Interested In *</label>
+                                        <select
+                                            value={formData.interest}
+                                            onChange={e => setFormData({ ...formData, interest: e.target.value })}
+                                            required
+                                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.06)', color: formData.interest ? 'white' : '#64748b', fontSize: '0.9rem', outline: 'none', appearance: 'none', cursor: 'pointer' }}
+                                            onFocus={e => e.currentTarget.style.borderColor = '#38bdf8'}
+                                            onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                        >
+                                            <option value="" disabled style={{ background: '#1e293b', color: '#64748b' }}>-- Select a Service --</option>
+                                            {['All Services', 'Website Audit', 'Website Design & Development', 'SEO Optimization', 'E-Commerce Development', 'Website Maintenance'].map(o => <option key={o} value={o} style={{ background: '#1e293b', color: 'white' }}>{o}</option>)}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Message</label>
+                                        <textarea
+                                            required
+                                            rows={3} value={formData.message}
+                                            onChange={e => setFormData({ ...formData, message: e.target.value })}
+                                            placeholder="Tell us about your project..."
+                                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.06)', color: 'white', fontSize: '0.9rem', outline: 'none', resize: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s', fontFamily: 'inherit' }}
+                                            onFocus={e => e.currentTarget.style.borderColor = '#38bdf8'}
+                                            onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        style={{
+                                            width: '100%', padding: '0.95rem',
+                                            background: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+                                            color: 'white', fontWeight: 700, fontSize: '1rem',
+                                            borderRadius: '14px', border: 'none', cursor: 'pointer',
+                                            letterSpacing: '0.03em', transition: 'opacity 0.25s, transform 0.25s',
+                                            boxShadow: '0 8px 20px rgba(14,165,233,0.35)'
+                                        }}
+                                        onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                                        onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                                    >
+                                        🚀 Send My Request
+                                    </button>
+                                </form>
+                            </>
+                        )}
+                    </div>
+
+                    <style>{`
+                        @keyframes fadeInBackdrop { from { opacity: 0; } to { opacity: 1; } }
+                        @keyframes slideUpModal { from { opacity: 0; transform: translateY(40px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+                    `}</style>
+                </div>
+            )}
         </main>
     );
 }

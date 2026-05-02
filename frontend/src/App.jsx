@@ -9,6 +9,7 @@ import About from './pages/About'
 import Services from './pages/Services'
 import Portfolio from './pages/Portfolio'
 import Careers from './pages/Careers'
+import FullTimeCareers from './pages/FullTimeCareers'
 import Contact from './pages/Contact'
 import Chatbot from './components/Chatbot'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/career" element={<Careers />} />
+        <Route path="/career/full-time" element={<FullTimeCareers />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
 

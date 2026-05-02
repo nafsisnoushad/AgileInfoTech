@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Users, Target, Eye, Award, BookOpen, Briefcase, CheckCircle, TrendingUp, Globe, Zap, Heart, Shield } from 'lucide-react';
+import { Users, Target, Eye, Award, CheckCircle, Zap, Heart, Shield, Globe, Briefcase, Smile } from 'lucide-react';
 import aboutImg from '../assets/image.png';
-import agilelogo from '../assets/agilelogo.png';
+
 import shabna from '../assets/Shabna.webp';
 import archana from '../assets/archana.webp';
 import Footer from '../components/Footer';
@@ -21,35 +21,6 @@ function useScrollReveal() {
   return [ref, visible];
 }
 
-/* ─── Animated counter component ─── */
-function AnimatedCounter({ target, suffix = '' }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
-        let start = 0;
-        const duration = 1800;
-        const step = (timestamp) => {
-          if (!start) start = timestamp;
-          const progress = Math.min((timestamp - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          setCount(Math.floor(eased * target));
-          if (progress < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-        obs.disconnect();
-      }
-    }, { threshold: 0.5 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [target]);
-
-  return <span ref={ref}>{count}{suffix}</span>;
-}
 
 /* ─── Value Card ─── */
 function ValueCard({ icon: Icon, title, desc, delay }) {
@@ -124,18 +95,100 @@ function TeamCard({ name, role, initials, color, delay }) {
   );
 }
 
+/* ─── Stat Item with Count-Up ─── */
+function StatItem({ icon: Icon, value, label, delay }) {
+  const [ref, visible] = useScrollReveal();
+  const [count, setCount] = useState(0);
+  
+  // Extract number from string (e.g., "50+" -> 50)
+  const target = parseInt(value.replace(/[^0-9]/g, '')) || 0;
+  const suffix = value.replace(/[0-9]/g, '');
+
+  useEffect(() => {
+    if (visible) {
+      let start = 0;
+      const end = target;
+      if (start === end) return;
+
+      let totalDuration = 800;
+      let increment = end / (totalDuration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+          setCount(end);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+
+      return () => clearInterval(timer);
+    }
+  }, [visible, target]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        padding: '1.5rem',
+      }}
+    >
+      <div style={{
+        width: '60px',
+        height: '60px',
+        borderRadius: '50%',
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        marginBottom: '1.5rem',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        transition: 'transform 0.3s ease'
+      }}
+      className="stat-icon-container"
+      >
+        <Icon size={28} />
+      </div>
+      <div style={{
+        fontSize: '3rem',
+        fontWeight: '800',
+        color: 'white',
+        marginBottom: '0.25rem',
+        letterSpacing: '-0.02em',
+        fontVariantNumeric: 'tabular-nums'
+      }}>
+        {count}{suffix}
+      </div>
+      <div style={{
+        fontSize: '0.85rem',
+        fontWeight: '700',
+        color: 'rgba(255, 255, 255, 0.85)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.12em'
+      }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main About Component ─── */
 function About() {
   const [heroRef, heroVisible] = useScrollReveal();
   const [storyRef, storyVisible] = useScrollReveal();
   const [missionRef, missionVisible] = useScrollReveal();
 
-  const stats = [
-    { label: 'Students Trained', value: 500, suffix: '+', icon: Users },
-    { label: 'Placements', value: 100, suffix: '+', icon: Briefcase },
-    { label: 'Courses Offered', value: 10, suffix: '+', icon: BookOpen },
-    { label: 'Years Experience', value: 5, suffix: '+', icon: TrendingUp },
-  ];
 
   const values = [
     { icon: Award, title: 'Excellence', desc: 'We deliver the highest quality in everything we do, setting new standards of success.' },
@@ -248,25 +301,9 @@ function About() {
                                     We believe that education should be more than just theory. That's why our programs are built around the concept of "Learning by Doing." Our students don't just study code; they build products, solve problems, and prepare for the careers they've always dreamed of.
                                 </p> */}
 
-                <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--accent-base)' }}>500+</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: '700' }}>Students</div>
-                  </div>
-                  <div style={{ width: '1px', background: 'var(--border-color)' }}></div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--accent-base)' }}>100%</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: '700' }}>Support</div>
-                  </div>
-                  <div style={{ width: '1px', background: 'var(--border-color)' }}></div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--accent-base)' }}>10+</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: '700' }}>Courses</div>
-                  </div>
-                </div>
 
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', flexWrap: 'wrap' }}>
-                  <a href="/courses" className="btn btn-primary" style={{ padding: '0.875rem 2.5rem' }}>View Courses</a>
+                  <a href="/services" className="btn btn-primary" style={{ padding: '0.875rem 2.5rem' }}>View Our Work</a>
                   <a href="/contact" className="btn btn-outline" style={{ padding: '0.875rem 2.5rem' }}>Get in Touch</a>
                 </div>
               </div>
@@ -275,25 +312,32 @@ function About() {
         </div>
       </section>
 
-      {/* ── STATS BAR ── */}
-      <section style={{ background: 'var(--accent-base)', padding: '3rem 1.5rem' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem' }}>
-          {stats.map(({ label, value, suffix, icon: Icon }, i) => (
-            <div key={i} className="text-center" style={{ color: 'white' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <Icon size={22} opacity={0.8} />
-              </div>
-              <div style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 800, fontFamily: 'var(--font-heading)', lineHeight: 1, marginBottom: '0.4rem' }}>
-                <AnimatedCounter target={value} suffix={suffix} />
-              </div>
-              <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontWeight: 500, fontSize: '0.95rem' }}>{label}</p>
-            </div>
-          ))}
+      {/* ── STATS SECTION ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, var(--accent-base) 0%, #1e40af 100%)',
+        padding: '4rem 0',
+        position: 'relative',
+        zIndex: 2,
+        marginTop: '-2rem',
+        borderRadius: '2rem 2rem 0 0',
+        boxShadow: '0 -20px 40px rgba(0,0,0,0.1)'
+      }}>
+        <div className="container">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '2rem'
+          }}>
+            <StatItem icon={Briefcase} value="10+" label="Projects Completed" delay={0} />
+            <StatItem icon={Smile} value="50+" label="Happy Clients" delay={100} />
+            <StatItem icon={Globe} value="2+" label="Countries Served" delay={200} />
+            <StatItem icon={Users} value="30+" label="Tech Experts" delay={300} />
+          </div>
         </div>
       </section>
 
-      {/* ── OUR STORY (White Background) ── */}
-      <section className="section" style={{ background: '#ffffff' }}>
+      {/* ── OUR STORY (Theme-Aware Background) ── */}
+      <section className="section" style={{ background: 'var(--bg-color)' }}>
         <div className="container">
           <div
             ref={storyRef}
@@ -357,7 +401,7 @@ function About() {
       </section>
 
       {/* ── MISSION & VISION ── */}
-      <section className="section"style={{ background:'linear-gradient(130deg, var(--accent-light) 0%, var(--accent-base) 100%)' }}>
+      <section className="section" style={{ background: 'linear-gradient(130deg, var(--accent-light) 0%, var(--accent-base) 100%)' }}>
         <div className="container">
           <div className="text-center" style={{ marginBottom: '3.5rem' }}>
             <h2 className="section-title">Our <span className="text-gradient">Purpose</span></h2>
@@ -404,7 +448,7 @@ function About() {
               </div>
               <h3 style={{ fontWeight: 700, fontSize: '1.4rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>Our Vision</h3>
               <p style={{ lineHeight: 1.8, color: 'var(--text-secondary)', margin: 0 }}>
-To become the global leader in technological innovation, setting new standards of excellence and creating solutions that positively impact businesses and communities worldwide              </p>
+                To become the global leader in technological innovation, setting new standards of excellence and creating solutions that positively impact businesses and communities worldwide              </p>
             </div>
           </div>
         </div>
@@ -418,7 +462,7 @@ To become the global leader in technological innovation, setting new standards o
               What Drives Us
             </div>
             <h2 className="section-title">Our Core <span style={{ color: 'white' }}>Values</span></h2>
-            <p className="section-subtitle"style={{ color: 'white' }}>Excellence, Integrity, Innovation, Client-Centricity, and Teamwork form the foundation of our culture. These principles guide our decisions, actions, and relationships, ensuring we deliver the highest quality in everything we do.</p>
+            <p className="section-subtitle" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Excellence, Integrity, Innovation, Client-Centricity, and Teamwork form the foundation of our culture. These principles guide our decisions, actions, and relationships, ensuring we deliver the highest quality in everything we do.</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
@@ -507,7 +551,7 @@ To become the global leader in technological innovation, setting new standards o
                     borderRadius: '50%',
                     margin: '0 auto 1.5rem',
                     overflow: 'hidden',
-                    border: '4px solid white',
+                    border: '4px solid var(--nav-bg)',
                     boxShadow: 'var(--shadow-md)',
                     transition: 'transform 0.3s ease'
                   }}
@@ -525,32 +569,7 @@ To become the global leader in technological innovation, setting new standards o
         </div>
       </section>
 
-      {/* ── CTA STRIP ── */}
-      <section style={{
-        background: 'linear-gradient(135deg, var(--accent-base) 0%, #6366f1 100%)',
-        padding: '5rem 1.5rem',
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{ position: 'absolute', top: '-50%', left: '-20%', width: '70%', height: '200%', background: 'rgba(255,255,255,0.04)', borderRadius: '50%', pointerEvents: 'none' }} />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 className="section-title" style={{ color: 'white', marginBottom: '1rem', fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' }}>
-            Ready to Transform Your Career?
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,0.82)', margin: '0 auto 2.5rem', maxWidth: '560px', fontSize: '1.1rem', lineHeight: 1.7 }}>
-            Join hundreds of students who turned their ambitions into thriving tech careers with AgileInfoTech.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/courses" className="btn" style={{ background: 'white', color: 'var(--accent-base)', fontWeight: 700, padding: '0.9rem 2.25rem', fontSize: '1rem' }}>
-              Start Your Journey
-            </a>
-            <a href="/contact" className="btn btn-outline" style={{ borderColor: 'rgba(255,255,255,0.5)', color: 'white', padding: '0.9rem 2.25rem', fontSize: '1rem' }}>
-              Contact Us
-            </a>
-          </div>
-        </div>
-      </section>
+      
       <Footer />
     </main>
   );
